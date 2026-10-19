@@ -1,7 +1,7 @@
 // A faceted origami "lucky star". Straight fold-lines with alternating light/
 // dark faces + a lit highlight and a shadowed base give the folded-paper look.
 // Pass light/dark/stroke to recolor it. (Mirrored in public/favicon.svg.)
-export default function PaperStar({ size = 40, light = '#F8C765', dark = '#E39E1E', stroke = '#B5791A', className = '' }) {
+export default function PaperStar({ size = 40, light = '#F2A9C0', dark = '#E08BA8', stroke = '#B35A7E', className = '' }) {
   return (
     <svg viewBox="0 0 64 64" width={size} height={size} className={className} aria-hidden="true">
       {/* folded facets */}

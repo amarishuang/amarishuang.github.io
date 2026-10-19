@@ -17,27 +17,26 @@ export default function LuckyStar() {
       <button
         className="lucky-star"
         onClick={() => setOpen(true)}
-        aria-label="Open the lucky star — ways to reach me"
-        title="psst… open me ✶"
+        aria-label="Open the hidden note — ways to reach me"
+        title="psst… open me ✦"
       >
-        <img src="/stars/rose.png" alt="" width={46} />
+        <img src="/stars/DNA.png" alt="" width={62} />
       </button>
 
       {open && (
         <div className="starnote" onClick={() => setOpen(false)}>
           <div className="starnote__card" onClick={e => e.stopPropagation()}>
-            <div className="starnote__star"><img src="/stars/rose.png" alt="" width={64} /></div>
-            <p className="starnote__eyebrow">✶ you found my lucky star ✶</p>
+            <div className="starnote__star"><img src="/stars/DNA.png" alt="" width={64} /></div>
             <p className="starnote__msg">let's connect!</p>
 
             <div className="starnote__links">
-              <a className="starnote__link" href="mailto:amanda.huang@yale.edu">
-                <span className="starnote__link-ic">✉️</span> amanda.huang@yale.edu
+              <a className="starnote__link" href="mailto:amaris03@mit.edu">
+                <span className="starnote__link-ic">✉️</span> amaris03@mit.edu
               </a>
-              <a className="starnote__link" href="https://linkedin.com/in/amandaminhuang" target="_blank" rel="noreferrer">
+              <a className="starnote__link" href="https://linkedin.com/in/amarishuang" target="_blank" rel="noreferrer">
                 <span className="starnote__link-ic">in</span> LinkedIn ↗
               </a>
-              <a className="starnote__link" href="/resume.pdf" target="_blank" rel="noreferrer">
+              <a className="starnote__link" href="/APM_2026_AmarisHuangResume.pdf" target="_blank" rel="noreferrer">
                 <span className="starnote__link-ic">📄</span> Resume ↗
               </a>
             </div>

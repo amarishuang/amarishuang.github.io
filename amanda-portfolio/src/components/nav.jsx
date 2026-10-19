@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react'
 
 const SECTIONS = [
-  { id: 'home', label: 'Home' },
   { id: 'me',   label: 'Me' },
-  { id: 'work', label: 'Work' },
+  { id: 'work', label: 'Experience' },
 ]
 
-// Zoomable resume viewer. Drop your resume at public/resume.png (image, for zoom)
-// and optionally public/resume.pdf (for the "Open PDF" button).
+// Resume viewer — renders the PDF at RESUME_PDF inline, with an Open/Download
+// fallback for browsers that won't embed a PDF.
+const RESUME_PDF = '/APM_2026_AmarisHuangResume.pdf'
+
 function ResumeModal({ onClose }) {
-  const [zoom, setZoom] = useState(false)
-  const [failed, setFailed] = useState(false)
 
   useEffect(() => {
     const onKey = e => { if (e.key === 'Escape') onClose() }
@@ -28,33 +27,15 @@ function ResumeModal({ onClose }) {
         <div className="resume-modal__bar">
           <span className="resume-modal__title">📄 Resume</span>
           <div className="resume-modal__actions">
-            <a href="/resume.pdf" target="_blank" rel="noreferrer" className="resume-modal__link">Open PDF ↗</a>
+            <a href={RESUME_PDF} target="_blank" rel="noreferrer" className="resume-modal__link">Open PDF ↗</a>
+            <a href={RESUME_PDF} download className="resume-modal__link">Download ↓</a>
             <button className="resume-modal__close" onClick={onClose} aria-label="Close">✕</button>
           </div>
         </div>
 
         <div className="resume-modal__scroll">
-          {failed ? (
-            <div className="resume-modal__placeholder">
-              <p>Add your resume image at <code>public/resume.png</code></p>
-              <p className="muted" style={{ marginTop: '0.4rem' }}>
-                (and a <code>public/resume.pdf</code> for the “Open PDF” button)
-              </p>
-            </div>
-          ) : (
-            <img
-              className={`resume-img ${zoom ? 'is-zoomed' : ''}`}
-              src="/resume.png"
-              alt="Amanda's resume"
-              onClick={() => setZoom(z => !z)}
-              onError={() => setFailed(true)}
-            />
-          )}
+          <embed src={RESUME_PDF} type="application/pdf" className="deliverable-embed" />
         </div>
-
-        {!failed && (
-          <p className="resume-modal__hint">{zoom ? 'click the page to zoom out' : 'click the page to zoom in'}</p>
-        )}
       </div>
     </div>
   )
@@ -62,7 +43,7 @@ function ResumeModal({ onClose }) {
 
 export default function Nav() {
   const [resumeOpen, setResumeOpen] = useState(false)
-  const [active, setActive] = useState('home')
+  const [active, setActive] = useState('me')
 
   useEffect(() => {
     const io = new IntersectionObserver(
