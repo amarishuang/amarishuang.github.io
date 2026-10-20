@@ -5,11 +5,11 @@ const EXPERIENCE_GROUPS = [
   { id: 'research', label: 'Research Experience' },
 ]
 
-// what the jump bar links to, in order
-const ANCHORS = [
-  { id: 'all', label: 'All' },
-  ...EXPERIENCE_GROUPS,
-  { id: 'projects', label: 'Projects' },
+// projects are grouped by discipline rather than listed flat
+const PROJECT_THEMES = [
+  { id: 'ai',          label: 'AI & Machine Learning' },
+  { id: 'data',        label: 'Data Science' },
+  { id: 'engineering', label: 'Engineering & Design' },
 ]
 
 const CATEGORY_TAGS = {
@@ -21,6 +21,7 @@ const CATEGORY_TAGS = {
 // `category` is one id or a list of them; a card shows up under each one it names.
 const catsOf = p => (Array.isArray(p.category) ? p.category : [p.category])
 const hasCat = (p, id) => catsOf(p).includes(id)
+const hasTheme = (p, id) => (Array.isArray(p.theme) ? p.theme : [p.theme]).includes(id)
 
 // ── ADD YOUR LINKS & IMAGES HERE ─────────────────────────────────────────────
 // image: put a file in /public/work/sacmgmt.png etc, or leave null for emoji
@@ -35,7 +36,7 @@ const PROJECTS = [
     image: null,
     title: 'Beghou Consulting',
     meta: 'Associate Consultant · Life Sciences Strategy · 2026–Present',
-    desc: 'Built a HIPAA-compliant data pipeline on AWS and Databricks for patient access and value assessment in a national oncology drug launch. Also worked a field effectiveness reporting engagement for a large pharmaceutical client, informing how they allocate commercial resources.',
+    desc: 'Built a HIPAA-compliant data pipeline on AWS and Databricks for patient access and value assessment in a national oncology drug launch. Also worked on a field effectiveness reporting engagement for a large pharmaceutical client, informing how they allocate commercial resources.',
     links: [],
   },
   {
@@ -89,7 +90,7 @@ const PROJECTS = [
     links: [],
   },
   {
-    id: 'protgpt2-cas9', category: 'projects', emoji: '🧫', color: '#E08BA8',
+    id: 'protgpt2-cas9', category: 'projects', theme: 'ai', emoji: '🧫', color: '#E08BA8',
     image: null,
     title: 'Generative Cas9 Design with ProtGPT2',
     meta: 'Computational Protein Design · Deep Learning',
@@ -97,7 +98,7 @@ const PROJECTS = [
     links: [],
   },
   {
-    id: 'diffusion-cas9', category: 'projects', emoji: '🌀', color: '#7A4F37',
+    id: 'diffusion-cas9', category: 'projects', theme: 'ai', emoji: '🌀', color: '#7A4F37',
     image: null,
     title: 'Structure-First Cas9 Variant Generation',
     meta: 'Computational Protein Design · Diffusion Models',
@@ -105,7 +106,7 @@ const PROJECTS = [
     links: [],
   },
   {
-    id: 'tf-motif', category: 'projects', emoji: '🧷', color: '#B35A7E',
+    id: 'tf-motif', category: 'projects', theme: 'ai', emoji: '🧷', color: '#B35A7E',
     image: null,
     title: 'Motif-Conditioned Transcription Factor Design',
     meta: 'Computational Protein Design · Sequence Models',
@@ -113,7 +114,7 @@ const PROJECTS = [
     links: [],
   },
   {
-    id: 'query-engine', category: 'projects', emoji: '🗂️', color: '#9A6B4C',
+    id: 'query-engine', category: 'projects', theme: ['data', 'engineering'], emoji: '🗂️', color: '#9A6B4C',
     image: null,
     title: 'Query Execution Internals',
     meta: 'Database Systems · Python',
@@ -121,7 +122,7 @@ const PROJECTS = [
     links: [],
   },
   {
-    id: 'ny-hospital', category: 'projects', emoji: '🏥', color: '#C2628A',
+    id: 'ny-hospital', category: 'projects', theme: 'data', emoji: '🏥', color: '#C2628A',
     image: null,
     title: 'Urban vs. Rural Hospitalization Outcomes in New York State',
     meta: 'Data Science · Random Forests',
@@ -129,7 +130,7 @@ const PROJECTS = [
     links: [],
   },
   {
-    id: 'brazil-air', category: 'projects', emoji: '🌫️', color: '#D3799A',
+    id: 'brazil-air', category: 'projects', theme: 'data', emoji: '🌫️', color: '#D3799A',
     image: null,
     title: 'Air Pollution and Health Burden in Brazil',
     meta: 'Data Science · Environmental Health',
@@ -137,7 +138,7 @@ const PROJECTS = [
     links: [],
   },
   {
-    id: 'exam-table', category: 'projects', emoji: '🛠️', color: '#5C3A28',
+    id: 'exam-table', category: 'projects', theme: 'engineering', emoji: '🛠️', color: '#5C3A28',
     image: null,
     title: 'Gynecology Examination Table for a Peruvian Hospital',
     meta: 'Hardware & Design · Capstone · CAD',
@@ -313,57 +314,58 @@ function ProjectCard({ p, onPreview, compact = false }) {
 
 export default function WorkSection() {
   const [previewLink, setPreviewLink] = useState(null)
-  const [inView, setInView] = useState('')
+  const [theme, setTheme] = useState('all')
+  const [role, setRole] = useState('all')
 
-  // The bar jumps to a group rather than filtering: everything stays on the
-  // page, so picking one heading never hides the others.
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      entries => entries.forEach(e => { if (e.isIntersecting) setInView(e.target.dataset.group) }),
-      { rootMargin: '-20% 0px -70% 0px' }
-    )
-    ANCHORS.forEach(a => {
-      const el = document.getElementById(`group-${a.id}`)
-      if (el) io.observe(el)
-    })
-    return () => io.disconnect()
-  }, [])
-
-  const jump = id => document.getElementById(`group-${id}`)?.scrollIntoView({ behavior: 'smooth' })
+  const shownProjects = PROJECTS.filter(
+    p => hasCat(p, 'projects') && (theme === 'all' || hasTheme(p, theme))
+  )
+  // 'all' keeps both groups on the page; picking one narrows to it in place
+  const shownGroups = EXPERIENCE_GROUPS.filter(g => role === 'all' || g.id === role)
 
   return (
     <>
       <section id="work" className="section work-section">
-        <div id="group-all" data-group="all" className="section__head">
-          <h2 className="section__title">experience <span className="star">✶</span></h2>
+        <div className="section__head">
+          <h2 className="section__title">Experience</h2>
           <p className="section__sub">Roles I've held across industry, research and public health.</p>
         </div>
 
-        <div className="work-filters">
-          {ANCHORS.map(a => (
+        <div className="theme-chips">
+          {[{ id: 'all', label: 'All' }, ...EXPERIENCE_GROUPS].map(g => (
             <button
-              key={a.id}
-              className={`work-filter ${inView === a.id ? 'work-filter--active' : ''}`}
-              onClick={() => jump(a.id)}
+              key={g.id}
+              className={`theme-chip ${role === g.id ? 'theme-chip--active' : ''}`}
+              aria-pressed={role === g.id}
+              onClick={() => setRole(g.id)}
             >
-              {a.label}
+              {g.label}
+              <span className="theme-chip__count">
+                {PROJECTS.filter(p => g.id === 'all'
+                  ? EXPERIENCE_GROUPS.some(e => hasCat(p, e.id))
+                  : hasCat(p, g.id)).length}
+              </span>
             </button>
           ))}
         </div>
 
-        {EXPERIENCE_GROUPS.map(g => (
-          <div key={g.id} id={`group-${g.id}`} data-group={g.id} className="work-group">
-            <h3 className="work-group__heading">{g.label}</h3>
-            <div className="wcard-grid wcard-grid--compact">
-              {PROJECTS.filter(p => hasCat(p, g.id)).map(p => (
-                <ProjectCard key={`${g.id}-${p.id}`} p={p} onPreview={setPreviewLink} compact />
-              ))}
+        <div key={role}>
+          {shownGroups.map(g => (
+            <div key={g.id} className="work-group">
+              <h3 className="work-group__heading">{g.label}</h3>
+              <div className="wcard-grid wcard-grid--compact">
+                {PROJECTS.filter(p => hasCat(p, g.id)).map((p, i) => (
+                  <div className="wcard-fade" style={{ '--i': i }} key={`${g.id}-${p.id}`}>
+                    <ProjectCard p={p} onPreview={setPreviewLink} compact />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
 
         <div className="volunteer">
-          <h3 className="volunteer__heading">leadership &amp; teaching <span className="star">☆</span></h3>
+          <h3 className="volunteer__heading">Leadership &amp; Teaching</h3>
           <div className="volunteer__grid">
             {LEADERSHIP.map((v, i) => (
               <div key={i} className="volunteer__card">
@@ -378,7 +380,7 @@ export default function WorkSection() {
         </div>
 
         <div className="volunteer">
-          <h3 className="volunteer__heading">honors &amp; awards <span className="star">☆</span></h3>
+          <h3 className="volunteer__heading">Honors &amp; Awards</h3>
           <ul className="honors__list">
             {HONORS.map((h, i) => (
               <li key={i} className="honors__item">
@@ -390,17 +392,36 @@ export default function WorkSection() {
         </div>
       </section>
 
-      {/* ── PROJECTS: its own band, visually separate from experience ── */}
+      {/* ── PROJECTS: its own band, filtered in place by theme ── */}
       <section id="projects" className="section projects-band">
-        <div id="group-projects" data-group="projects" className="projects-band__inner">
+        <div className="projects-band__inner">
           <div className="section__head">
-            <h2 className="section__title">projects <span className="star">✦</span></h2>
-            <p className="section__sub">Things I've built on my own — computational biology, data and hardware.</p>
+            <h2 className="section__title">Projects</h2>
+            <p className="section__sub">Coursework, research and team builds across machine learning, data and hardware.</p>
           </div>
 
-          <div className="wcard-grid wcard-grid--compact">
-            {PROJECTS.filter(p => hasCat(p, 'projects')).map(p => (
-              <ProjectCard key={p.id} p={p} onPreview={setPreviewLink} compact />
+          <div className="theme-chips">
+            {[{ id: 'all', label: 'All' }, ...PROJECT_THEMES].map(t => (
+              <button
+                key={t.id}
+                className={`theme-chip ${theme === t.id ? 'theme-chip--active' : ''}`}
+                aria-pressed={theme === t.id}
+                onClick={() => setTheme(t.id)}
+              >
+                {t.label}
+                <span className="theme-chip__count">
+                  {PROJECTS.filter(p => hasCat(p, 'projects') && (t.id === 'all' || hasTheme(p, t.id))).length}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* key on the active theme so the grid re-mounts and the cards animate in */}
+          <div className="wcard-grid wcard-grid--compact is-swapping" key={theme}>
+            {shownProjects.map((p, i) => (
+              <div className="wcard-fade" style={{ '--i': i }} key={p.id}>
+                <ProjectCard p={p} onPreview={setPreviewLink} compact />
+              </div>
             ))}
           </div>
         </div>

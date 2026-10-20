@@ -30,27 +30,27 @@ export default function MeSection() {
       {/* ── RIGHT: scrolling chapters ── */}
       <div className="me-right">
         <div className="me-chapter">
-          <p className="me-chapter__label"> me!</p>
+          <p className="me-chapter__label">Me!</p>
           <p>
             At Duke, I studied <strong>Biomedical Engineering</strong> and{' '}
-            <strong>Computer Science</strong> — extensively focused on health innovation, access, and policy as a <strong>Pratt Fellow</strong> and <strong>National Academy of Engineering Grand Challenges Scholar.</strong>
+            <strong>Computer Science</strong> — extensively focused on health innovation, access, and policy as a <strong>Pratt Fellow</strong> and <strong>National Academy of Engineering Grand Challenges Scholar</strong>.
           </p>
         </div>
 
         <div className="me-chapter">
-          <p className="me-chapter__label">what I'm Up To</p>
+          <p className="me-chapter__label">What I'm Up To</p>
           <p>
             I'm passionate about developing strategic solutions for complex problems.
-            I've worked across <strong> health</strong>,{' '}
-            <strong>biotechnology</strong>, and the{' '}
+            I've worked across <strong>health</strong>,{' '}
+            <strong>biotechnology</strong>, and{' '}
             <strong>consulting</strong>. Now at Beghou, I'm an associate consultant working on commercial excellence projects for pharmaceutical and biotech clients.
           </p>
         </div>
 
         <div className="me-chapter">
-          <p className="me-chapter__label">Afterhours</p>
+          <p className="me-chapter__label">After Hours</p>
           <p>
-            You'll find me half-marathoon training, at Solidcore, or making matcha lattes. Always happy to connect!
+            You'll find me half-marathon training, at Solidcore, or making matcha lattes. Always happy to connect!
           </p>
         </div>
       </div>
